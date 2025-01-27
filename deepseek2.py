@@ -5,7 +5,6 @@ from datetime import datetime
 
 # Ollama 서버 설정
 OLLAMA_HOST = "http://127.0.0.1:11434"
-MODEL_NAME = "sisaai/sisaai-llama3.1:latest"
 
 @st.cache_data(ttl=300)
 def get_ollama_version():
@@ -18,10 +17,24 @@ def get_ollama_version():
 # 시스템 정보 사이드바
 with st.sidebar:
     st.header("System Information")
+    
+    # 설치된 모델 목록
+    available_models = [
+        "sisaai/sisaai-llama3.1:latest",
+        "deepseek-r1:8b"
+    ]
+    
+    # 모델 선택 드롭다운
+    selected_model = st.selectbox(
+        "Select Model",
+        available_models,
+        index=0  # 기본 선택 모델
+    )
+    
     ollama_ver = get_ollama_version()
     st.metric(label="Ollama Version", value=ollama_ver)
     st.divider()
-    st.markdown(f"**Current Model**: `{MODEL_NAME}`")
+    st.markdown(f"**Current Model**: `{selected_model}`")  # 선택된 모델 표시
     st.caption(f"Last Updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 # 세션 상태 초기화
@@ -59,12 +72,12 @@ if prompt := st.chat_input("Enter your message..."):
     # 사용자 메시지 처리
     st.session_state.messages.append({"role": "user", "content": prompt})
     
-    # Ollama API 요청 (스트리밍 활성화)
+    # Ollama API 요청 (선택된 모델 사용)
     url = f"{OLLAMA_HOST}/api/chat"
     data = {
-        "model": MODEL_NAME,
+        "model": selected_model,  # 선택된 모델 사용
         "messages": st.session_state.messages,
-        "stream": True  # 스트리밍 활성화
+        "stream": True
     }
 
     with st.chat_message("assistant"):
@@ -77,27 +90,23 @@ if prompt := st.chat_input("Enter your message..."):
             response = requests.post(url, json=data, stream=True)
             
             if response.status_code == 200:
-                # 스트리밍 응답 처리
                 for line in response.iter_lines():
                     if line:
                         chunk = json.loads(line.decode('utf-8'))
                         
-                        # 메트릭 정보 수집 (마지막 청크에서만)
                         if chunk.get("done"):
                             metrics = {
                                 "response_time": f"{(datetime.now() - start_time).total_seconds():.2f}s",
-                                "model": chunk.get('model', MODEL_NAME),
+                                "model": chunk.get('model', selected_model),
                                 "created_at": chunk.get('created_at'),
                                 "eval_count": chunk.get('eval_count'),
                                 "eval_duration": chunk.get('eval_duration')
                             }
                         
-                        # 응답 내용 누적
                         if chunk.get("message") and "content" in chunk["message"]:
                             full_response += chunk["message"]["content"]
                             response_placeholder.markdown(full_response + "▌")
                 
-                # 최종 응답 업데이트
                 response_placeholder.markdown(full_response)
                 st.session_state.messages.append({
                     "role": "assistant",
@@ -105,7 +114,6 @@ if prompt := st.chat_input("Enter your message..."):
                 })
                 st.session_state.metrics.append(metrics)
                 
-                # 실시간 메트릭 표시
                 with st.expander("Latest Response Metrics"):
                     cols = st.columns(3)
                     cols[0].metric("Response Time", metrics.get('response_time', 'N/A'))
