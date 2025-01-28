@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import json
 from datetime import datetime
+import subprocess
 
 # Ollama 서버 설정
 OLLAMA_HOST = "http://127.0.0.1:11434"
@@ -14,15 +15,29 @@ def get_ollama_version():
     except:
         return 'Not Available'
 
+@st.cache_data(ttl=300)
+def get_available_models():
+    try:
+        # `ollama list` 명령어 실행
+        result = subprocess.run(["ollama", "list"], capture_output=True, text=True)
+        if result.returncode == 0:
+            # 명령어 결과를 파싱하여 모델 이름 추출
+            models = []
+            for line in result.stdout.splitlines()[1:]:  # 첫 줄 제외 (헤더)
+                model_name = line.split()[0]  # 첫 번째 열 (모델 이름)
+                models.append(model_name)
+            return models
+        else:
+            return ["Error fetching models"]
+    except Exception as e:
+        return [f"Error: {str(e)}"]
+
 # 시스템 정보 사이드바
 with st.sidebar:
     st.header("System Information")
     
-    # 설치된 모델 목록
-    available_models = [
-        "sisaai/sisaai-llama3.1:latest",
-        "deepseek-r1:8b"
-    ]
+    # Ollama에서 동적으로 모델 목록 불러오기
+    available_models = get_available_models()
     
     # 모델 선택 드롭다운
     selected_model = st.selectbox(
@@ -136,3 +151,4 @@ with st.sidebar:
         st.markdown("**Last Response Metrics**")
         st.write(f"⏱️ Response Time: {latest_metrics.get('response_time', 'N/A')}")
         st.write(f"🔢 Tokens Generated: {latest_metrics.get('eval_count', 'N/A')}")
+
