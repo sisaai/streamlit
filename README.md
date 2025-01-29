@@ -6,7 +6,7 @@
 
 [Ollama SisaAI](https://ollama.com/sisaai/sisaai-llama3.1)
 
-[Streamlit SisaAI](https://ollama.com/sisaai/sisaai-llama3.1)
+[Streamlit SisaAI](https://github.com/sisaai/streamlit)
 
 [Huggingface SisaAI](https://huggingface.co/asiansoul)
 
