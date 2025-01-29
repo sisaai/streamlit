@@ -80,8 +80,8 @@ if "partial_response" not in st.session_state:
     st.session_state.partial_response = ""
 
 # 채팅 인터페이스
-st.title("🚀 Ollama Chat Interface")
-st.subheader("✨ Fancy UI Version")
+st.title("🤖 SisaAI AI Chat")  
+st.subheader("🚀 Smart AI Chat")
 
 status_cols = st.columns(3)
 with status_cols[0]:
