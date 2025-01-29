@@ -4,7 +4,9 @@
 ![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Model-orange) 
 ![Python](https://img.shields.io/badge/Python-Streamlit-blue)
 
-[Ollama](https://ollama.com/sisaai/sisaai-llama3.1)
+[Ollama SisaAI](https://ollama.com/sisaai/sisaai-llama3.1)
+[Streamlit SisaAI](https://ollama.com/sisaai/sisaai-llama3.1](https://github.com/sisaai/streamlit)
+[Huggingface SisaAI](https://huggingface.co/asiansoul)
 
 ## 📌 프로젝트 개요  
 이 프로젝트는 **Llama3.1 8b 한국어 모델 + DeepSeek R1 모델**을 기반으로 하는 **Streamlit 웹 UI**입니다.  
