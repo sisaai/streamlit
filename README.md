@@ -5,7 +5,9 @@
 ![Python](https://img.shields.io/badge/Python-Streamlit-blue)
 
 [Ollama SisaAI](https://ollama.com/sisaai/sisaai-llama3.1)
-[Streamlit SisaAI](https://ollama.com/sisaai/sisaai-llama3.1](https://github.com/sisaai/streamlit)
+
+[Streamlit SisaAI](https://ollama.com/sisaai/sisaai-llama3.1)
+
 [Huggingface SisaAI](https://huggingface.co/asiansoul)
 
 ## 📌 프로젝트 개요  
