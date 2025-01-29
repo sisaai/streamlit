@@ -145,7 +145,7 @@ if prompt := st.chat_input("Enter your message..."):
             st.session_state.messages.append({"role": "assistant", "content": full_response})
             st.session_state.metrics.append(metrics)
 
-            with st.expander("📊 Latest Response Metrics"):
+            with st.expander("📊 시사AI Latest Response Metrics"):
                 cols = st.columns(3)
                 cols[0].metric("⏱️ Response Time", metrics.get('response_time', 'N/A'))
                 cols[1].metric("🔢 Token Count", metrics.get('eval_count', 'N/A'))
